@@ -1,315 +1,278 @@
-//banner
-var bbox=$(".banner-box")[0];
-var bannerbox=$(".banbox")[0];
-var bbackground=$(".bannerbackground",bbox)[0];
-var as=$('a',bannerbox);
-var btns=$(".dian");
-var left=$(".left")[0];
-var right=$(".right")[0];
-var arrColor=["#F6BCC1","#E8E8E8","#FFD2D3","#e8e8e8","#EC7A97","#B26CEA"]
-var num=0;
-function move(type){
-	if(type=="r"){
-			num++;
-			if(num>=as.length){
-				num=0;
-			}
-		}else if(type=="l"){
-			num--;
-			if(num<=-1){
-				num=as.length-1;
-			}
-		}
+var banner=$(".banner")[0]
+var bannerbox=$(".bannerbox")[0]
+var imgs=$(".img")
+var btns=$(".btn")
+var obj=document.documentElement.scrollTop==0?document.body:document.documentElement;
 
-	for(var i=0;i<as.length;i++){
-		as[i].style.opacity=0;
-		as[i].style.filter="alpha(opacity=0)";
-		bbackground.style.opacity=10;
-		bbackground.style.filter="alpha(opacity=10)";
-		btns[i].style.background="#fff";
-	}
-	animate(as[num],{opacity:1},600,Tween.Linear);
-	
-	// animate(bbackground,{background:arrColor[num]},600,Tween.Linear);
-	animate(bbackground,{opacity:1},600,Tween.Linear);
-	bbackground.style.background=arrColor[num];
-	btns[num].style.background="#ccc";
-}
-var t=setInterval(function(){
-		move("r")
-	},3000);
-bannerbox.onmouseover=function(){
-	clearInterval(t);
-	//left.style.display="block";
-	//right.style.display="block";
-}
-bannerbox.onmouseout=function(){
-	t=setInterval(function(){
-		move("r")
-	},3000);
-	left.style.display="none";
-	right.style.display="none";
-}
-for(var i=0;i<btns.length;i++){
-	btns[i].index=i;
-	btns[i].onmouseover=function(){
-		for(var i=0;i<as.length;i++){
-			as[i].style.opacity=0;
-			as[i].style.filter="alpha(opacity=0)";
-			bbackground.style.opacity=10;
-			bbackground.style.filter="alpha(opacity=10)";
-			btns[i].style.background="#fff";
-		}
-		animate(as[this.index],{opacity:1},600,Tween.Linear);
-		// as[this.index].style.opacity=1;
-
-		// animate(bbackground,{background:arrColor[this.index]},600,Tween.Linear);
-		animate(bbackground,{opacity:1},600,Tween.Linear);
-		bbackground.style.background=arrColor[this.index];
-		as[this.index].style.filter="alpha(opacity=100)";
-		this.style.background="#ccc";
-		num=this.index;
-	}
-}
-left.onclick=function(){
-	move("l");
-}
-right.onclick=function(){
-	move("r");
-}
-//中间遮罩开始
-var center=getClassName("center");
-var huan=$(".huan1");
-var mask=getClassName("center-mask");
-for(var i=0;i<center.length;i++){
-	center[i].index=i;
-	center[i].onmouseover=function(){
-		mask[this.index].style.display="block";
-	}
-	center[i].onmouseout=function(){
-		mask[this.index].style.display="none";
-	}
-}
-//中间遮罩结束
-
-//左侧定位
-var fpLeft=$(".fp-left")[0];
-var jump=$(".jump")[0];
-var btn=$(".btn",jump);
-var main=$(".maincontent")[0];
-var foot=$(".foot",main);
-var foot1=$(".foot1",main);
-var btnColor=["#ea5f8d","#64c333","#f7a945","#19c8a9","#f15453","#0aa6e8","#dd2727","#dd2727"];
-var searchTop=$(".search-top")[0];
-var flag=true;
-var flag1=false;
-var btn2=$(".btn2")[0];
-var fhdb=$(".fhdb")[0];
-document.onscroll=function(){
-	var tops=document.body.scrollTop||document.documentElement.scrollTop;
-//顶部导航	
-	if(tops>=700){
-		if(flag1){
-			animate(searchTop,{top:0});
-			flag1=false;
-			flag=true;
-		}
-	}else{
-		if(flag){
-			animate(searchTop,{top:-50});
-			flag=false;
-			flag1=true;
-		}
-	}
-
-
-	if(tops>=670){
-		jump.style.display="block";
-	}else{
-		jump.style.display="none";
-	}
-
-	for(var i=0;i<foot.length;i++){
-		if(foot[i].offsetTop<=tops+70){
-			for(var j=0;j<btn.length;j++){
-				btn[j].style.background="#626262";
-			}
-			btn[i].style.background=btnColor[i];
-			now=i;
-		}else{
-			btn[i].style.background="#626262";
-		}
-	}
-
-
-	var ch=document.documentElement.clientHeight;
-			for(var i=0;i<foot1.length;i++){
-				if(foot1[i].offsetTop<=tops+ch){
-					var imgs=$("img",foot1[i]);
-					for(var j=0;j<imgs.length;j++){
-						var src=imgs[j].getAttribute("data-src");
-						imgs[j].src=src;
-					}
-				}
-			}
-
-}
-
-document.body.scrollTop=1;
+	//左右轮播实现
 var now=0;
-var obj=document.body.scrollTop?document.body:document.documentElement;
-for(var i=0;i<btn.length;i++){
-	btn[i].index=i;
-	btn[i].onclick=function(){
+var colors=["#33c8ff","#e9e7ea","#0b9d6e","#8014b5","#02bfff"]
+
+function move(){
+	now++;
+	if(now==imgs.length){
+		now=0
+	}
+	for (var i = 0; i <imgs.length; i++) {
+		imgs[i].style.zIndex=1;
+		btns[i].style.background="#999"
+	};
+	imgs[now].style.zIndex=2;
+	btns[now].style.background="#ccc"
+	bannerbox.style.background=colors[now]
+}
+var t=setInterval(move,2000)
+
+	//底部轮播实现
+
+for (var i = 0; i < btns.length; i++) {
+	btns[i].index=i
+	btns[i].onmouseover=function(){
+		for (var i = 0; i < imgs.length; i++) {
+			imgs[i].style.zIndex=1;
+			btns[i].style.background="#3290b2"
+		};		
+		this.style.background="#91e2ff"
+		imgs[this.index].style.zIndex=2;
 		now=this.index;
-		animate(obj,{scrollTop:foot[this.index].offsetTop-70},300,Tween.Linear);
-		for(var j=0;j<btn.length;j++){
-			btn[j].style.background="#626262";
-		}
-		btn[this.index].style.background=btnColor[this.index];
 	}
-	btn2.onclick=function(){
-		animate(obj,{scrollTop:0},300,Tween.Linear);
+};
+
+	//悬浮停止实现
+
+banner.onmouseover=function(){
+	clearInterval(t)
+}
+banner.onmouseout=function(){
+	t=setInterval(move,2000)		//防止重复触发
+}
+	//点击透明度实现
+var alertright=$(".alert-right")[0]
+alertright.onmouseover=function(){
+	animate(this,{opacity:1})
+}
+alertright.onmouseout=function(){
+	animate(this,{opacity:0.7})
+}
+var alertimg1=$(".alert-img1")[0]
+var alertimgs=$("img",alertimg1)
+for (var i = 0; i < alertimgs.length; i++) {
+	alertimgs[i].onmouseover=function(){
+		animate(this,{opacity:1})
 	}
-	fhdb.onclick=function(){
-		animate(obj,{scrollTop:0},300,Tween.Linear);
+	alertimgs[i].onmouseout=function(){
+		animate(this,{opacity:0.8})
 	}
-	btn[i].onmouseover=function(){
-		var btnsColor=["#ea5f8d","#64c333","#f7a945","#19c8a9","#f15453","#0aa6e8","#000","#000"];
-		for(var j=0;j<btn.length;j++){
-			if(j!=now){
-				btn[j].style.background="#626262";
+};
+
+
+	//下部导航实现
+var redbox=$(".redcatbox")
+var redcat=$(".redcat")
+for (var i = 0; i < redbox.length; i++) {
+	redbox[i].index=i;
+	redbox[i].onmouseover=function(){
+		for (var i = 0; i < redcat.length; i++) {
+			animate(redcat[i],{top:0},100)
+		};
+		animate(redcat[this.index],{top:-13},300)
+	}
+	redbox[i].onmouseout=function(){
+		for (var i = 0; i < redcat.length; i++) {
+			animate(redcat[i],{top:0},100)
+		};
+	}
+};
+
+	//潮流前沿图片方法
+
+var circles=$(".circles")
+var cirimgs=$(".cirimg")
+for (var i = 0; i < circles.length; i++) {
+	circles[i].index=i;
+	circles[i].onmouseover=function(){
+		animate(cirimgs[this.index],{width:145,height:145},300)
+	}
+	circles[i].onmouseout=function(){
+		animate(cirimgs[this.index],{width:125,height:125},300)
+	}
+};
+
+	//图片移动
+
+var moveimgs=$(".moveimg")
+for (var i = 0; i < moveimgs.length; i++) {
+	moveimgs[i].onmouseover=function(){
+		animate(this,{right:5},200)
+	}
+	moveimgs[i].onmouseout=function(){
+		animate(this,{right:-2},200)
+	}
+};
+
+	//图片透明度
+var opctimgs=$(".opctimg")
+for (var i = 0; i < opctimgs.length; i++) {
+	opctimgs[i].onmouseover=function(){
+		animate(this,{opacity:0.7},200)
+	}
+	opctimgs[i].onmouseout=function(){
+		animate(this,{opacity:1},200)
+	}
+};
+
+
+	//楼层跳转实现
+var floorbtnbox=$('.floorbox')[0]
+var floorbtn=$('.floor')
+var floor=$(".qzsg")
+var fcolors=["#f7a945","#19c8a9","#f15453","#64c333","#0aa6e8","#ea5f8d","black","black"]
+var sh=document.body.scrollTop?document.body:document.documentElement;
+var fixed7=$(".fixed-7")[0]
+
+	//到达指定楼层后相应按钮变色
+var fnum=0
+var kg1=true;
+var kg2=true;
+document.onscroll=function(){
+		var tops=document.documentElement.scrollTop||document.body.scrollTop;		
+		//当滚轮到达一定位置相应按钮变色
+		for (var i = 0; i < floor.length; i++) {
+			var bh=floor[i].offsetTop-50;						
+			if(tops>=bh){
+				for (var j = 0; j < floor.length; j++) {
+					floorbtn[j].style.background="#626262"
+				};
+				floorbtn[i].style.background=fcolors[i]
+				fnum=i	
 			}
 		}
-		btn[this.index].style.background=btnsColor[this.index]
-	}
-	btn[i].onmouseout=function(){
-		if(this.index!=now){
-			btn[this.index].style.background="#626262";
+
+		//当滚轮到达一定位置搜索栏,侧导航,到达顶部出现
+		var flags=rmppbox.offsetTop;
+		if (tops>flags) {
+			if (kg1) {
+				kg1=false;
+				kg2=true;
+				animate(floorbtnbox,{width:36,height:370},300)
+				animate(dfixedsbox,{top:0})
+				fixed7.style.display="block"
+			};		
+		}else{
+			if (kg2) {
+				kg2=false;
+				kg1=true;
+				animate(floorbtnbox,{width:0,height:0},300)
+				animate(dfixedsbox,{top:-50})
+				fixed7.style.display="none"	
+			};
 		}
+		
 	}
-}
 
-//nav
-var bbox=$(".banner-box")[0];
-var nav=$(".nav",bbox);
-var contentcon=$(".content-con",bbox);
-var navv=$(".navv");
-var navColor=["#e54077","#427def","#6347ed","#e541a7","#ed4177","#427def","#fa5c7a","#f7a831","#f7a831","#657def","#e32727","#4294f7","#f9a831","#3bc7b0","#dd2727","#3bc7b0"]
-for(var i=0;i<nav.length;i++){
-	nav[i].index=i;
-	hover(nav[i],function(){
-		contentcon[this.index].style.display="block";
-		this.style.background="#fff";
-		nav[this.index].style.color=navColor[this.index];
-		navv[this.index].style.color=navColor[this.index];
-		navv[this.index].style.fontWeight="bold";
-	},function(){
-		contentcon[this.index].style.display="none";
-		this.style.background="#ededed";
-		nav[this.index].style.color="#000";
-		navv[this.index].style.color="#000";
-		navv[this.index].style.fontWeight="normal";
-	});
-}
+	//点击实现楼层跳转
 
-
-
-//主导航小动画开始
-var mainnavbox=$(".mainnavbox")[0];
-var mainnav=$(".mainnav",mainnavbox)[0];
-var mnav=$(".nav",mainnav);
-var blogo=$(".blogo");
-for(var i=0;i<mnav.length;i++){
-	mnav[i].index=i;
-	hover(mnav[i],function(){
-		blogo[this.index].style.display="block";
-	},function(){
-		blogo[this.index].style.display="none";
-	});
-}
-
-//主导航小动画结束
-
-
-//topnav下拉菜单开始
-var topnav=$(".topnav-right")[0];
-var yiji=$(".yiji"); 
-var erji=$(".erji");
-var yijia=$(".yijia");
-for (var i=0;i<yiji.length;i++) {
-		yiji[i].index=i;
-		hover(yiji[i],function(){
-			yiji[this.index].style.background="#fff";
-			erji[this.index].style.display="block";
-			yijia[this.index].style.color="#C40000";
-			yijia[3].style.color="#999";
-		},function(){
-			yiji[this.index].style.background="";
-			erji[this.index].style.display="none";
-			yijia[this.index].style.color="#999";
-		});
+// var last;	//操作的上一个元素
+//只需操作的上一个元素和当前的元素就能实现需要循环才能达到的目的
+for (var i = 0; i < floorbtn.length; i++) {
+	floorbtn[i].index=i;
+	floorbtn[i].onclick=function(){
+		var bh=floor[this.index].offsetTop-50;
+		animate(sh,{scrollTop:bh})	
+		// if (last) {
+		// 	floorbtn[last.index].style.background=""
+		// };
+		this.style.background=fcolors[this.index]
+		// last=this;
 	}
-//topnav下拉菜单结束
 
-// //main照片动画开始
-// var grid=$(".grid");
-// for(var i=0;i<grid.length;i++){
-// 	var oneimg=$(".oneimg",grid[i]);
-// 	oneimg[i].index=i;
-// 	hover(oneimg[i],function(){
-// 		animate(oneimg(this.index),{right:-10});
-// 	},function(){
-// 		animate(oneimg(this.index),{right:0});
-// 	})
-// }
-// //main照片动画结束
+	//下面的事件也可通过CSS的hover实现,而且不和点击事件冲突,
+	floorbtn[i].onmouseover=function(){
+		for (var j = 0; j < floorbtn.length; j++) {	
+			if (j!=fnum) {		
+				floorbtn[j].style.background="#626262"
+			};
+		};
+		floorbtn[this.index].style.background=fcolors[this.index]	
+	}
 
-//输入框开始
-var srk=$('.srk');
-for(var i=0;i<srk.length;i++){
-	srk[i].onfocus=function(){
-		if(this.value=="百搭T恤 女神衣橱必备"){
-			this.value="";
+	floorbtn[i].onmouseout=function(){
+		for (var j = 0; j < floorbtn.length; j++) {	
+			if (j!=fnum) {	
+				floorbtn[j].style.background="#626262"
+			}
 		}
-	}
-	srk[i].onblur=function(){
-		if(this.value==""){
-			this.value="百搭T恤 女神衣橱必备";
-		}
-	}
-}
-//输入框结束
+	}	
+};
 
-//右侧开始
-var mbarouter=$(".mbar-outer")[0];
-var dingwei=$(".dingwei",mbarouter);
-var tishi=$(".tishi",mbarouter);
-var dingweia=$(".dingweia",mbarouter)[0];
-var tishia=$(".tishia",mbarouter)[0];
-hover(dingweia,function(){
-	tishia.style.opacity=1;
-	tishia.style.display="block";
-	// animate(tishia,{opacity:1},300);
-	animate(tishia,{left:-150},300);
-},function(){
-	tishia.style.opacity=0;
-	tishia.style.display="none";
-	// animate(tishia,{opacity:0},300);
-	animate(tishia,{left:-200},300);
-})
-for(var i=0;i<tishi.length;i++){
-	dingwei[i].index=i;
-	hover(dingwei[i],function(){
-		tishi[this.index].style.display="block";
-		tishi[this.index].style.opacity=1;
-		// animate(tishi[this.index],{opacity:1},300);
-		animate(tishi[this.index],{left:-90},300)
-	},function(){
-		tishi[this.index].style.display="none";
-		tishi[this.index].style.opacity=0;
-		// animate(tishi[this.index],{opacity:0},300);
-		animate(tishi[this.index],{left:-140},300)
+var rmppbox=$(".rmppbox")[0]
+var dfixedsbox=$(".dfixedsbox")[0]
+
+//获得失去焦点事件
+
+var searchtext=$("#search-text")
+searchtext.onfoucs=function(){
+	this.style.color="#ccc"
+}
+searchtext.onblur=function(){
+	this.style.color="black"
+}
+
+//固定定位滑动事件
+var huadong=$(".huadong")
+var fixed8=$(".fixed-8")
+for (var i = 0; i < fixed8.length; i++) {
+	fixed8[i].index=i
+	fixed8[i].onmouseover=function(){
+		for (var i = 0; i < huadong.length; i++) {
+			huadong[i].style.opacity=0
+			animate(huadong[i],{right:55},200)
+		};
+		huadong[this.index].style.opacity=1
+		animate(huadong[this.index],{right:25},200)
+	}
+	fixed8[i].onmouseout=function(){
+		huadong[this.index].style.opacity=0
+	}
+};
+
+//二维码点击出现
+var huadong1=$(".huadong1")[0]
+var fixed10=$(".fixed-10")[0]
+
+fixed10.onmouseover=function(){
+		huadong1.style.display="block"
+	}
+fixed10.onmouseout=function(){
+		huadong1.style.display="none"
+	}
+
+
+//遮罩动效
+
+var zhezao=$(".zhezao")
+var rmppmiddle=$(".rmpp-middle")[0]
+var liss=$("li",rmppmiddle)
+for (var i = 0; i < liss.length; i++) {
+	liss[i].index=i
+	liss[i].onmouseover=function(){
+		zhezao[this.index].style.display="block"
+		animate(zhezao[this.index],{opacity:0.8})
+	}
+	liss[i].onmouseout=function(){
+		for (var i = 0; i < zhezao.length; i++) {
+			zhezao[i].style.display="none"
+			zhezao[i].style.opacity=0
+		};
+		
+	}
+};
+
+
+//回到顶层
+var totop=$(".totop")[0]
+totop.onclick=function(){
+	animate(obj,{scrollTop:0},1000,function(){
+		totop.style.display="none"
 	})
 }
-//右侧结束
